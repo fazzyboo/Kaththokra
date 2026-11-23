@@ -76,6 +76,16 @@ Admin sign-in accepts any password of 4+ characters and any 6-digit TOTP. OTP co
 Replace the function bodies in `src/lib/api.ts` with `fetch` calls to the FastAPI service; the pages only call those functions.
 Session state (`src/lib/session.tsx`) is localStorage for the demo; in production it comes from the 90-day cookie, the dealer JWT and the staff session.
 
+### Applink calls (static IP)
+
+Applink only accepts API calls from whitelisted IPs, and Vercel has no fixed outbound IP.
+So all Applink calls go through a small proxy on a free Oracle Cloud VM with a reserved IP.
+
+- `infra/applink-proxy/` contains the proxy (`server.js`) and the VM setup script (`cloud-init.yaml`). Its `README.md` has the setup steps. It runs on the VM, not on Vercel.
+- `src/lib/applink.ts` is the server-side helper, e.g. `applink('sms/send', {...})`. Import it only from `src/app/api/**/route.ts` or server actions, never from `"use client"` files.
+- `.env.example` lists the env vars (`APPLINK_PROXY_URL`, `APPLINK_PROXY_SECRET`, `APPLINK_APP_ID`, `APPLINK_PASSWORD`). Set them in Vercel and keep real values out of git.
+- Keep the `CHANGE_ME_LONG_RANDOM_SECRET` placeholder in the committed `cloud-init.yaml`; put the real secret only in the copy you paste into Oracle.
+
 ## Content note
 
 Treatment text in `src/lib/data.ts` is **sample content** for UI work and is flagged as such on every prescription.
