@@ -1,0 +1,6 @@
+import type { ReactNode } from "react";
+import { DealerShell } from "@/components/dealer/Shell";
+
+export default function DealerLayout({ children }: { children: ReactNode }) {
+  return <DealerShell>{children}</DealerShell>;
+}
