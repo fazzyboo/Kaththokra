@@ -2,24 +2,43 @@
   "name": "kaththokra-web",
   "version": "0.1.0",
   "private": true,
-  "description": "কাঠঠোকরা (Kaththokra) — Bangla-first crop disease diagnosis PWA. Frontend only, mock data.",
+  "description": "কাঠঠোকরা (Kaththokra) — Bangla-first crop disease diagnosis PWA with a Next.js API backend.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed": "tsx --conditions=react-server scripts/seed.ts",
+    "indexes": "tsx --conditions=react-server scripts/ensure-indexes.ts",
+    "create-admin": "tsx --conditions=react-server scripts/create-admin.ts",
+    "applink-smoke": "tsx --conditions=react-server scripts/applink-smoke.ts",
+    "test": "tsx --conditions=react-server --test tests/*.test.ts",
+    "eval-gemini": "tsx --conditions=react-server scripts/eval-gemini.ts",
+    "contract-test": "tsx --conditions=react-server scripts/contract-test.ts"
   },
   "dependencies": {
+    "@google/genai": "^3.6.1",
+    "bcryptjs": "^3.0.3",
+    "mongodb": "^7.9.1",
     "next": "^16.0.0",
+    "otplib": "^13.6.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "server-only": "^0.0.1",
+    "undici": "^8.13.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "tailwindcss": "^4.1.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=22.19"
   }
 }

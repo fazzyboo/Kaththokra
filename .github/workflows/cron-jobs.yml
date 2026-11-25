@@ -1,0 +1,32 @@
+# Frequent backend jobs (docs/BACKEND_PLAN.md §9). The daily reconcile runs on Vercel Cron (vercel.json).
+# Needs the repository secret JOBS_SECRET (same value as the Vercel env var).
+name: cron-jobs
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: cron-jobs
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        job: [expire-payments, sms-retry, send-alerts, process-inbox]
+    steps:
+      - name: POST /api/jobs/${{ matrix.job }}
+        env:
+          JOBS_SECRET: ${{ secrets.JOBS_SECRET }}
+          BASE_URL: https://kaththokra.vercel.app
+        run: |
+          if [ -z "$JOBS_SECRET" ]; then echo "JOBS_SECRET repository secret is not set"; exit 1; fi
+          curl --fail-with-body -sS --max-time 70 -X POST \
+            -H "Authorization: Bearer $JOBS_SECRET" \
+            "$BASE_URL/api/jobs/${{ matrix.job }}"
+          echo
